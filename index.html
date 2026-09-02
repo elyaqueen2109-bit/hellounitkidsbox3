@@ -70,9 +70,9 @@
 
         .tab-btn {
             border: none;
-            padding: 12px 18px;
+            padding: 12px 16px;
             border-radius: 60px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 800;
             font-family: 'Nunito', sans-serif;
             cursor: pointer;
@@ -462,7 +462,8 @@
                 line-height: 70px !important;
                 font-size: 2.2rem !important;
             }
-            .letter-item, .letter-slot {
+            .letter-item,
+            .letter-slot {
                 width: 40px !important;
                 height: 40px !important;
                 font-size: 1.2rem !important;
@@ -888,6 +889,7 @@
             color: rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.02);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .letter-slot.filled {
@@ -924,6 +926,7 @@
             box-shadow: 0 4px 15px rgba(255, 210, 0, 0.3);
             transition: all 0.2s ease;
             user-select: none;
+            touch-action: manipulation;
         }
 
         .letter-item:active {
@@ -937,6 +940,11 @@
 
         .letter-item.placed {
             display: none;
+        }
+
+        .letter-item.selected-letter {
+            border: 3px solid #ffd200;
+            transform: scale(1.05);
         }
 
         .drop-zone {
@@ -985,7 +993,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB 1: GUESS WHO                                              -->
+        <!-- TAB 1: GUESS WHO -->
         <!-- ============================================================ -->
         <div class="tab-content active" id="tab1">
             <div class="section-title">👀 Look at the picture!</div>
@@ -1027,7 +1035,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB 2: LISTEN & SAY                                           -->
+        <!-- TAB 2: LISTEN & SAY -->
         <!-- ============================================================ -->
         <div class="tab-content" id="tab2">
             <div class="section-title">🎧 Listen & Say</div>
@@ -1063,7 +1071,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB 3: PLAY THE GAME                                         -->
+        <!-- TAB 3: PLAY THE GAME -->
         <!-- ============================================================ -->
         <div class="tab-content" id="tab3">
             <div class="section-title">🔤 Play the Game</div>
@@ -1110,12 +1118,12 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB: NUMBERS (drag and drop)                                 -->
+        <!-- TAB: NUMBERS (drag and drop + клик для телефона) -->
         <!-- ============================================================ -->
         <div class="tab-content" id="tabNumbers">
             <div class="section-title">🔢 Numbers</div>
             <div class="section-desc">
-                <strong>Drag</strong> the letters to spell the number!
+                <strong>Drag</strong> or <strong>tap</strong> the letters to spell the number!
             </div>
 
             <div class="prep-scene">
@@ -1131,7 +1139,7 @@
                 <div class="letters-container" id="lettersContainer"></div>
 
                 <div class="feedback-box" id="numbersFeedback" style="border-color: rgba(255, 255, 255, 0.06);">
-                    🔤 Drag the letters to spell the number!
+                    🔤 Tap a letter, then tap a slot!
                 </div>
 
                 <div class="btn-group">
@@ -1145,7 +1153,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB 4: READ & ANSWER                                         -->
+        <!-- TAB 4: READ & ANSWER -->
         <!-- ============================================================ -->
         <div class="tab-content" id="tab4">
             <div class="section-title">📖 Read & Answer</div>
@@ -1175,7 +1183,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB 5: DICE GAME                                              -->
+        <!-- TAB 5: DICE GAME -->
         <!-- ============================================================ -->
         <div class="tab-content" id="tab5">
             <div class="section-title">🎲 Ask & Answer</div>
@@ -1222,7 +1230,7 @@
         </div>
 
         <!-- ============================================================ -->
-        <!-- TAB 6: WORKBOOK                                               -->
+        <!-- TAB 6: WORKBOOK -->
         <!-- ============================================================ -->
         <div class="tab-content" id="tab6">
             <div class="section-title">📝 Workbook</div>
@@ -1549,7 +1557,7 @@
         });
 
         // ================================================================
-        //  TAB 2: LISTEN & SAY
+        //  TAB 2: LISTEN & SAY (аудио в той же папке)
         // ================================================================
         document.getElementById('goToNumbersBtn').addEventListener('click', function() {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1582,7 +1590,8 @@
                 return;
             }
 
-            audioPlayer = new Audio('audio/track_all.mp3');
+            // АУДИО В ТОЙ ЖЕ ПАПКЕ (НЕ В audio/)
+            audioPlayer = new Audio('track_all.mp3');
             audioStatus.textContent = '⏳ Loading audio...';
             this.textContent = '⏸️ Pause';
 
@@ -1594,7 +1603,7 @@
                     <br><span style="font-size: 0.9rem; opacity: 0.6;">Example: "D-O-L-L — Doll. That's number eighteen and it's pink."</span>
                 `;
             }).catch(() => {
-                audioStatus.textContent = '❌ Audio file not found. Check "audio/track_all.mp3"';
+                audioStatus.textContent = '❌ Audio file not found. Check "track_all.mp3" in the same folder';
                 this.textContent = '🔊 Listen';
                 prepFeedback.innerHTML = `
                     💡 <span class="highlight">Practice!</span> 
@@ -1762,25 +1771,24 @@
         renderWordBank();
 
         // ================================================================
-        //  TAB: NUMBERS (drag and drop)
+        //  TAB: NUMBERS (drag and drop + клик для телефона)
         // ================================================================
         const numbersData = [
-            { number: 11, word: 'ELEVEN', letters: ['E','L','E','V','E','N'] },
-            { number: 12, word: 'TWELVE', letters: ['T','W','E','L','V','E'] },
-            { number: 13, word: 'THIRTEEN', letters: ['T','H','I','R','T','E','E','N'] },
-            { number: 14, word: 'FOURTEEN', letters: ['F','O','U','R','T','E','E','N'] },
-            { number: 15, word: 'FIFTEEN', letters: ['F','I','F','T','E','E','N'] },
-            { number: 16, word: 'SIXTEEN', letters: ['S','I','X','T','E','E','N'] },
-            { number: 17, word: 'SEVENTEEN', letters: ['S','E','V','E','N','T','E','E','N'] },
-            { number: 18, word: 'EIGHTEEN', letters: ['E','I','G','H','T','E','E','N'] },
-            { number: 19, word: 'NINETEEN', letters: ['N','I','N','E','T','E','E','N'] },
-            { number: 20, word: 'TWENTY', letters: ['T','W','E','N','T','Y'] }
+            { number: 11, word: 'ELEVEN', letters: ['E', 'L', 'E', 'V', 'E', 'N'] },
+            { number: 12, word: 'TWELVE', letters: ['T', 'W', 'E', 'L', 'V', 'E'] },
+            { number: 13, word: 'THIRTEEN', letters: ['T', 'H', 'I', 'R', 'T', 'E', 'E', 'N'] },
+            { number: 14, word: 'FOURTEEN', letters: ['F', 'O', 'U', 'R', 'T', 'E', 'E', 'N'] },
+            { number: 15, word: 'FIFTEEN', letters: ['F', 'I', 'F', 'T', 'E', 'E', 'N'] },
+            { number: 16, word: 'SIXTEEN', letters: ['S', 'I', 'X', 'T', 'E', 'E', 'N'] },
+            { number: 17, word: 'SEVENTEEN', letters: ['S', 'E', 'V', 'E', 'N', 'T', 'E', 'E', 'N'] },
+            { number: 18, word: 'EIGHTEEN', letters: ['E', 'I', 'G', 'H', 'T', 'E', 'E', 'N'] },
+            { number: 19, word: 'NINETEEN', letters: ['N', 'I', 'N', 'E', 'T', 'E', 'E', 'N'] },
+            { number: 20, word: 'TWENTY', letters: ['T', 'W', 'E', 'N', 'T', 'Y'] }
         ];
 
         let numbersIndex = 0;
         let numbersAnswered = false;
-        let draggedLetter = null;
-        let dragSource = null;
+        let selectedLetter = null;
 
         const numberDisplay = document.getElementById('numberDisplay');
         const wordDropZone = document.getElementById('wordDropZone');
@@ -1799,14 +1807,43 @@
             return arr;
         }
 
+        function findFirstEmptySlot() {
+            const slots = wordDropZone.querySelectorAll('.letter-slot');
+            for (let slot of slots) {
+                if (slot.textContent === '?' || slot.textContent === '') {
+                    return slot;
+                }
+            }
+            return null;
+        }
+
+        function placeLetterInSlot(letterEl) {
+            if (numbersAnswered) return;
+            const letter = letterEl.textContent;
+            const emptySlot = findFirstEmptySlot();
+            if (!emptySlot) {
+                numbersFeedback.innerHTML = '⚠️ No empty slots!';
+                return;
+            }
+
+            emptySlot.textContent = letter;
+            emptySlot.classList.add('filled');
+            letterEl.style.display = 'none';
+            selectedLetter = null;
+            document.querySelectorAll('.letter-item').forEach(el => {
+                el.classList.remove('selected-letter');
+            });
+        }
+
         function renderNumbers() {
             const item = numbersData[numbersIndex];
-            
+
             numberDisplay.textContent = item.number;
             wordDropZone.innerHTML = '';
             lettersContainer.innerHTML = '';
             numbersAnswered = false;
-            numbersFeedback.innerHTML = '🔤 Drag the letters to spell the number!';
+            selectedLetter = null;
+            numbersFeedback.innerHTML = '🔤 Tap a letter, then tap a slot!';
 
             // Создаём слоты
             item.letters.forEach((letter, i) => {
@@ -1814,13 +1851,14 @@
                 slot.className = 'letter-slot';
                 slot.dataset.index = i;
                 slot.textContent = '?';
+
+                // DRAG & DROP для компьютера
                 slot.addEventListener('dragover', (e) => e.preventDefault());
                 slot.addEventListener('drop', (e) => {
                     e.preventDefault();
                     if (numbersAnswered) return;
-                    if (!draggedLetter) return;
-                    
-                    // Если в слоте уже есть буква — возвращаем её обратно
+                    if (!selectedLetter) return;
+
                     if (slot.textContent !== '?') {
                         const oldLetter = slot.textContent;
                         const letterEls = lettersContainer.querySelectorAll('.letter-item');
@@ -1837,40 +1875,84 @@
                             newLetter.textContent = oldLetter;
                             newLetter.draggable = true;
                             newLetter.addEventListener('dragstart', (e) => {
-                                draggedLetter = newLetter;
+                                selectedLetter = newLetter;
                                 newLetter.classList.add('dragging');
                             });
                             newLetter.addEventListener('dragend', () => {
                                 newLetter.classList.remove('dragging');
                             });
+                            newLetter.addEventListener('click', function() {
+                                if (this.style.display === 'none') return;
+                                document.querySelectorAll('.letter-item').forEach(el => {
+                                    el.classList.remove('selected-letter');
+                                });
+                                this.classList.add('selected-letter');
+                                selectedLetter = this;
+                                numbersFeedback.innerHTML =
+                                    `✅ Selected: <span class="highlight">${this.textContent}</span>. Now tap a slot!`;
+                            });
                             lettersContainer.appendChild(newLetter);
                         }
                     }
-                    
-                    // Вставляем букву в слот
-                    slot.textContent = draggedLetter.textContent;
+
+                    slot.textContent = selectedLetter.textContent;
                     slot.classList.add('filled');
-                    draggedLetter.style.display = 'none';
-                    draggedLetter = null;
+                    selectedLetter.style.display = 'none';
+                    selectedLetter = null;
+                    document.querySelectorAll('.letter-item').forEach(el => {
+                        el.classList.remove('selected-letter');
+                    });
                 });
+
+                // КЛИК ДЛЯ ТЕЛЕФОНА
+                slot.addEventListener('click', function() {
+                    if (numbersAnswered) return;
+                    if (!selectedLetter) {
+                        numbersFeedback.innerHTML = '👆 First, tap a letter below!';
+                        return;
+                    }
+                    if (this.textContent !== '?') {
+                        numbersFeedback.innerHTML = '⚠️ This slot is already filled!';
+                        return;
+                    }
+                    placeLetterInSlot(selectedLetter);
+                });
+
                 wordDropZone.appendChild(slot);
             });
 
             // Перемешиваем буквы
             const shuffledLetters = shuffleArray([...item.letters]);
-            
+
             shuffledLetters.forEach((letter) => {
                 const letterEl = document.createElement('div');
                 letterEl.className = 'letter-item';
                 letterEl.textContent = letter;
                 letterEl.draggable = true;
+
+                // DRAG для компьютера
                 letterEl.addEventListener('dragstart', (e) => {
-                    draggedLetter = letterEl;
+                    selectedLetter = letterEl;
                     letterEl.classList.add('dragging');
                 });
                 letterEl.addEventListener('dragend', () => {
                     letterEl.classList.remove('dragging');
                 });
+
+                // КЛИК ДЛЯ ТЕЛЕФОНА
+                letterEl.addEventListener('click', function() {
+                    if (numbersAnswered) return;
+                    if (this.style.display === 'none') return;
+
+                    document.querySelectorAll('.letter-item').forEach(el => {
+                        el.classList.remove('selected-letter');
+                    });
+                    this.classList.add('selected-letter');
+                    selectedLetter = this;
+                    numbersFeedback.innerHTML =
+                        `✅ Selected: <span class="highlight">${this.textContent}</span>. Now tap a slot!`;
+                });
+
                 lettersContainer.appendChild(letterEl);
             });
 
@@ -1886,7 +1968,6 @@
             const item = numbersData[numbersIndex];
             const slots = wordDropZone.querySelectorAll('.letter-slot');
             let allCorrect = true;
-            let userWord = '';
 
             slots.forEach((slot, i) => {
                 const letter = slot.textContent;
@@ -1894,7 +1975,6 @@
                     allCorrect = false;
                     slot.classList.add('wrong');
                 } else {
-                    userWord += letter;
                     if (letter !== item.letters[i]) {
                         allCorrect = false;
                         slot.classList.add('wrong');
@@ -1910,7 +1990,6 @@
             } else {
                 numbersFeedback.innerHTML = `❌ Try again! The word for ${item.number} is not correct.`;
                 sound.play('wrong');
-                // Сброс через 1.5 секунды
                 setTimeout(() => {
                     slots.forEach(slot => {
                         slot.classList.remove('correct', 'wrong');
